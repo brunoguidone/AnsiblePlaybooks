@@ -1,0 +1,11 @@
+---
+- hosts: '{{ target }}'
+  tasks:
+    - name: Criar repositório de montagem
+        shell: mkdir -p /log
+        
+    - name: Insert a line at the end of a file.
+      lineinfile:
+        path: /etc/sudoers.d/90-cloud-init-users
+        state: present
+        line: 'ansible ALL=(ALL) NOPASSWD:ALL'       

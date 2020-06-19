@@ -1,0 +1,45 @@
+---
+- hosts: test
+  vars:
+    zabbix_server: "10.10.35.3"
+
+  tasks:
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^LogFileSize=0'
+      line: 'LogFileSize=256'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^# EnableRemoteCommands=0'
+      line: 'EnableRemoteCommands=1'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^Server=127.0.0.1'
+      line: 'Server={{ zabbix_server }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^ServerActive=127.0.0.1'
+      line: 'ServerActive={{ zabbix_server }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^Hostname=Zabbix server'
+      line: 'Hostname={{ ansible_hostname }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^# Timeout=3'
+      line: 'Timeout=3'
+
+  - firewalld:
+      port: 10050-10051/tcp
+      permanent: yes
+      state: enabled
+
+  - shell: firewall-cmd --reload
+
+  - name: Starting the Zabbix Agent
+    service: name=zabbix-agent state=restarted enabled=yes

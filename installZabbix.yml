@@ -1,0 +1,13 @@
+---
+- hosts: oci
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+  - name: Installing the Zabbix Agent
+    raw: yum install https://repo.zabbix.com/zabbix/4.4/rhel/8/x86_64/zabbix-age                                                                  nt-4.4.6-1.el8.x86_64.rpm -y
+    become: yes
+
+  - name: Starting the Zabbix Agent
+    service: name=zabbix-agent state=started enabled=yes
+    become: yes

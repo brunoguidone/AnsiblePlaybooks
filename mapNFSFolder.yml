@@ -1,0 +1,17 @@
+---
+- hosts: '{{ target }}'
+  tasks:
+    - name: Criar repositório de montagem
+      file:
+        path: '/{{folder}}'
+        state: directory
+        mode: '0755'
+
+    - name: Inserir linha no FSTAB
+      lineinfile:
+        path: /etc/fstab
+        state: present
+        line: '{{IP}}:/{{folder}} /{{folder}} nfs defaults 0 0'
+
+    - name: Montar diretório
+      shell: mount /logs
